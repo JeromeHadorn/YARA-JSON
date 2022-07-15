@@ -71,4 +71,4 @@ make check
 ```
 
 ## Improvements
-Addition of `value_contains` which can iteratate over lists/arrays.
+Addition of `regex_value_contains` which can iteratate over lists/arrays.

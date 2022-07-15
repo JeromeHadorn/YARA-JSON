@@ -53,14 +53,12 @@ define_function(key_exists)
         }
         token = strtok(NULL, ".");
     }
-    
-    
+
     free(key);
     free(token);
 
     return_integer(1);
 }
-
 
 // Assert String value
 define_function(value_exists_string)
@@ -86,7 +84,7 @@ define_function(value_exists_string)
         {
             return_integer(0);
         }
-        
+
         strcpy(prevToken, token);
         token = strtok(NULL, ".");
     }
@@ -106,7 +104,7 @@ define_function(value_exists_string)
     free(value);
     free(prevToken);
     free(token);
-    
+
     return_integer(1);
 }
 
@@ -134,7 +132,7 @@ define_function(value_exists_integer)
         {
             return_integer(0);
         }
-        
+
         strcpy(prevToken, token);
         token = strtok(NULL, ".");
     }
@@ -154,10 +152,9 @@ define_function(value_exists_integer)
     free(key);
     free(prevToken);
     free(token);
-    
+
     return_integer(1);
 }
-
 
 // Assert Regex value
 define_function(value_exists_regex)
@@ -184,7 +181,7 @@ define_function(value_exists_regex)
         {
             return_integer(0);
         }
-        
+
         strcpy(prevToken, token);
         token = strtok(NULL, ".");
     }
@@ -199,11 +196,11 @@ define_function(value_exists_regex)
     {
         return_integer(0);
     }
-  
+
     free(key);
     free(prevToken);
     free(token);
-    
+
     return_integer(1);
 }
 
@@ -231,7 +228,7 @@ define_function(value_exists_float)
         {
             return_integer(0);
         }
-        
+
         strcpy(prevToken, token);
         token = strtok(NULL, ".");
     }
@@ -250,8 +247,183 @@ define_function(value_exists_float)
     free(key);
     free(prevToken);
     free(token);
-    
+
     return_integer(1);
+}
+
+// String Array includes
+define_function(string_array_includes)
+{
+    char *key = strdup(string_argument(1));
+    char *value = strdup(string_argument(2));
+
+    json_t *json = module()->data;
+    if (json == NULL)
+    {
+        return_integer(0);
+    }
+
+    // Split key into possible subcomponents - separated by '.'
+    json_t *iter = json;
+    char *token = strtok(key, ".");
+    char *prevToken = strdup(token);
+
+    while (token != NULL)
+    {
+        iter = json_object_get(iter, token);
+        if (iter == NULL)
+        {
+            return_integer(0);
+        }
+
+        strcpy(prevToken, token);
+        token = strtok(NULL, ".");
+    }
+
+    json_t *array = iter;
+    bool isArray = json_is_array(array);
+
+    size_t index;
+    json_t *val;
+
+    json_array_foreach(array, index, val)
+    {
+        json_t *element = json_array_get(array, index);
+        const char *found = json_string_value(element);
+        if (strcmp(found, value) == 0)
+        {
+            return_integer(1);
+        }
+    }
+
+    free(array);
+    free(key);
+    free(key);
+    free(value);
+    free(prevToken);
+    free(token);
+
+    return_integer(0);
+}
+// Integer Array includes
+define_function(integer_array_includes)
+{
+    char *key = strdup(string_argument(1));
+    int value = integer_argument(2);
+
+    json_t *json = module()->data;
+    if (json == NULL)
+    {
+        return_integer(0);
+    }
+
+    // Split key into possible subcomponents - separated by '.'
+    json_t *iter = json;
+    char *token = strtok(key, ".");
+    char *prevToken = strdup(token);
+
+    while (token != NULL)
+    {
+        iter = json_object_get(iter, token);
+        if (iter == NULL)
+        {
+            return_integer(0);
+        }
+
+        strcpy(prevToken, token);
+        token = strtok(NULL, ".");
+    }
+
+    json_t *array = iter;
+    bool isArray = json_is_array(array);
+
+    size_t index;
+    json_t *val;
+
+    json_array_foreach(array, index, val)
+    {
+        json_t *element = json_array_get(array, index);
+        double foundNumber = json_number_value(element);
+        if (foundNumber == 0.0)
+        {
+            printf("no number value could be obtained from value at key\n");
+            return_integer(0);
+        }
+        int found = (int)foundNumber;
+
+        if (found == value)
+        {
+            return_integer(1);
+        }
+    }
+
+    free(array);
+    free(key);
+    free(key);
+    free(value);
+    free(prevToken);
+    free(token);
+
+    return_integer(0);
+}
+// Float Array includes
+define_function(float_array_includes)
+{
+    char *key = strdup(string_argument(1));
+    double value = float_argument(2);
+
+    json_t *json = module()->data;
+    if (json == NULL)
+    {
+        return_integer(0);
+    }
+
+    // Split key into possible subcomponents - separated by '.'
+    json_t *iter = json;
+    char *token = strtok(key, ".");
+    char *prevToken = strdup(token);
+
+    while (token != NULL)
+    {
+        iter = json_object_get(iter, token);
+        if (iter == NULL)
+        {
+            return_integer(0);
+        }
+
+        strcpy(prevToken, token);
+        token = strtok(NULL, ".");
+    }
+
+    json_t *array = iter;
+    bool isArray = json_is_array(array);
+
+    size_t index;
+    json_t *val;
+
+    json_array_foreach(array, index, val)
+    {
+        json_t *element = json_array_get(array, index);
+        double found = json_number_value(element);
+        if (found == 0.0)
+        {
+            printf("no number value could be obtained from value at key\n");
+            return_integer(0);
+        }
+
+        if (found == value)
+        {
+            return_integer(1);
+        }
+    }
+
+    free(array);
+    free(key);
+    free(key);
+    free(prevToken);
+    free(token);
+
+    return_integer(0);
 }
 
 begin_declarations;
@@ -261,7 +433,9 @@ declare_function("value_exists", "ss", "i", value_exists_string);
 declare_function("value_exists", "si", "i", value_exists_integer);
 declare_function("value_exists", "sr", "i", value_exists_regex);
 declare_function("value_exists", "sf", "i", value_exists_float);
-
+declare_function("string_array_includes", "ss", "i", string_array_includes);
+declare_function("integer_array_includes", "si", "i", integer_array_includes);
+declare_function("float_array_includes", "sf", "i", float_array_includes);
 end_declarations;
 
 int module_initialize(YR_MODULE *module)
@@ -300,7 +474,6 @@ int module_load(
 
     // JSON is valid
     module_object->data = json;
-
 
     return ERROR_SUCCESS;
 }

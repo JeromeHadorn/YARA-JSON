@@ -10,5 +10,19 @@
         "int": 1,
         "float": 1.1
     },
-    "regex": "e2c87f81a9bcb33d4f943a4072c137c2"
+    "regex": "e2c87f81a9bcb33d4f943a4072c137c2",
+    "strArray": ["one", "two", "three"],
+    "string": {
+        "strArray": ["one", "two", "three"]
+    },
+    "intArray": [1, 2, 3],
+    "integer": {
+        "intArray": [1, 2, 3]
+
+    },
+    "floatArray": [1, 2, 3],
+    "float": {
+        "floatArray": [1, 2, 3]
+
+    }
 }

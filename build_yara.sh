@@ -48,4 +48,6 @@ echo 'Building YARA...'
 cd $BUILD_DIR
 ./bootstrap.sh
 ./configure --with-crypto --enable-cuckoo
+make
+make install
 
